@@ -1,12 +1,8 @@
 ---
-title: "Welcome To My Blog"
-author: "Tristan O'Malley"
-date: "2026-01-11"
+title: "Welcome to My Blog!"
+author: "Wendy Frankel"
+date: "2026-01-14"
 categories: [news]
 ---
 
-This is the first post in a Quarto blog. Welcome!
-
-![](thumbnail.jpg)
-
-Since this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.
+This is my first blog post. The next blog post I will be making will be about what models and for what purpose do they exist within the field of regression analysis.

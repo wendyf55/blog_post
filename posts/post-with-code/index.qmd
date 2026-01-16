@@ -1,13 +1,25 @@
 ---
-title: "Post With Code"
-author: "Harlow Malloc"
+title: "Regression Analysis Methodologies for Continous Response Variables"
+author: "Wendy Frankel"
 date: "2026-01-14"
-categories: [news, code, analysis]
-image: "image.jpg"
+categories: [how-to, code, analysis]
 ---
 
-This is a post with executable code.
+**Comparisons and contrasts**: These posts compare and contrast different tools, approaches, or concepts in data science, and might include pros and cons or recommendations for when to use each option.
+
+For this assignment, we suggest aiming for a word count of around 1200 (+ or - 300) words, not including code, captions, references, etc. Please consider the amount of time it will take your audience to read your post and keep this in mind as you plan and write your content. We recommend creating a brief outline for the blog first before diving in.
+
+-   What is the main topic or concept you want to write about in your blog post? What makes it interesting or important to your audience?
+-   What type of data science blog do you want to write? (see different types above)
+-   What are the key points or ideas you want to include in your blog post? How can you organize these points to create a clear and coherent structure for your post?
+-   How can you use examples or case studies to illustrate the concepts or techniques you are discussing in your blog post? What are some real-world applications of the topic you are writing about?
+-   How can you make your blog post engaging and interactive for your audience? What types of media or interactive elements can you include to make your post more interesting and interactive?
+-   How can you conclude your blog post in a way that leaves a lasting impression on your readers? What are the main takeaways you want your readers to remember after reading your post?
 
 ```{r}
 1 + 1
 ```
+
+Copyright © G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia
+
+<https://creativecommons.org/licenses/by/4.0/>

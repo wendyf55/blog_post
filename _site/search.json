@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Regression Analysis Methodologies",
+    "section": "",
+    "text": "Comparisons and contrasts: These posts compare and contrast different tools, approaches, or concepts in data science, and might include pros and cons or recommendations for when to use each option.\nFor this assignment, we suggest aiming for a word count of around 1200 (+ or - 300) words, not including code, captions, references, etc. Please consider the amount of time it will take your audience to read your post and keep this in mind as you plan and write your content. We recommend creating a brief outline for the blog first before diving in.\n\nWhat is the main topic or concept you want to write about in your blog post? What makes it interesting or important to your audience?\nWhat type of data science blog do you want to write? (see different types above)\nWhat are the key points or ideas you want to include in your blog post? How can you organize these points to create a clear and coherent structure for your post?\nHow can you use examples or case studies to illustrate the concepts or techniques you are discussing in your blog post? What are some real-world applications of the topic you are writing about?\nHow can you make your blog post engaging and interactive for your audience? What types of media or interactive elements can you include to make your post more interesting and interactive?\nHow can you conclude your blog post in a way that leaves a lasting impression on your readers? What are the main takeaways you want your readers to remember after reading your post?\n\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome to My Blog!",
+    "section": "",
+    "text": "This is my first blog post. The next blog post I will be making will be about what models and why exist within the field of regression analysis."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "blog_post",
+    "section": "",
+    "text": "Regression Analysis Methodologies\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 14, 2026\n\n\nWendy Frankel\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome to My Blog!\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 14, 2026\n\n\nWendy Frankel\n\n\n\n\n\nNo matching items"
+  }
+]

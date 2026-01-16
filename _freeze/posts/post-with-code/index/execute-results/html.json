@@ -1,0 +1,15 @@
+{
+  "hash": "1683d552151840a8a0fd96dec65132c5",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Regression Analysis Methodologies\"\nauthor: \"Wendy Frankel\"\ndate: \"2026-01-14\"\ncategories: [news, code, analysis]\n---\n\n**Comparisons and contrasts**: These posts compare and contrast different tools, approaches, or concepts in data science, and might include pros and cons or recommendations for when to use each option.\n\nFor this assignment, we suggest aiming for a word count of around 1200 (+ or - 300) words, not including code, captions, references, etc. Please consider the amount of time it will take your audience to read your post and keep this in mind as you plan and write your content. We recommend creating a brief outline for the blog first before diving in.\n\n-   What is the main topic or concept you want to write about in your blog post? What makes it interesting or important to your audience?\n-   What type of data science blog do you want to write? (see different types above)\n-   What are the key points or ideas you want to include in your blog post? How can you organize these points to create a clear and coherent structure for your post?\n-   How can you use examples or case studies to illustrate the concepts or techniques you are discussing in your blog post? What are some real-world applications of the topic you are writing about?\n-   How can you make your blog post engaging and interactive for your audience? What types of media or interactive elements can you include to make your post more interesting and interactive?\n-   How can you conclude your blog post in a way that leaves a lasting impression on your readers? What are the main takeaways you want your readers to remember after reading your post?\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
