@@ -5,21 +5,28 @@ date: "2026-01-14"
 categories: [how-to, code, analysis]
 ---
 
-**Comparisons and contrasts**: These posts compare and contrast different tools, approaches, or concepts in data science, and might include pros and cons or recommendations for when to use each option.
+------------------------------------------------------------------------
 
-For this assignment, we suggest aiming for a word count of around 1200 (+ or - 300) words, not including code, captions, references, etc. Please consider the amount of time it will take your audience to read your post and keep this in mind as you plan and write your content. We recommend creating a brief outline for the blog first before diving in.
+Regression analysis is an evolving, useful, and important tool within the data science toolbox. Various methods are commonly used within scientific papers and industry. Therefore, understanding the different kinds of regression analysis, and being able to use them for the right purposes, is very important. However, there are so many kinds of regression analysis that it can be difficult to keep them all straight, and understand when they may be used. In this bloc post, I'll be going over some of the most important kinds of regression analysis, when dealing with a continuous response variable.
 
--   What is the main topic or concept you want to write about in your blog post? What makes it interesting or important to your audience?
--   What type of data science blog do you want to write? (see different types above)
--   What are the key points or ideas you want to include in your blog post? How can you organize these points to create a clear and coherent structure for your post?
--   How can you use examples or case studies to illustrate the concepts or techniques you are discussing in your blog post? What are some real-world applications of the topic you are writing about?
--   How can you make your blog post engaging and interactive for your audience? What types of media or interactive elements can you include to make your post more interesting and interactive?
--   How can you conclude your blog post in a way that leaves a lasting impression on your readers? What are the main takeaways you want your readers to remember after reading your post?
+1.  **Local Conditioned Quantile**
+
+Non-parametric quantile regression models how different quantiles (e.g., the median or upper tail) of a response variable depend on predictors **without assuming a specific functional form** for that relationship. Instead of estimating the conditional mean, it directly estimates conditional quantiles using flexible methods such as kernel smoothing, splines, or local polynomial fitting. This makes it especially useful for capturing nonlinear effects and heteroskedasticity, and for understanding how covariates influence the entire distribution of the response rather than just its average.
+
+Lipsitz et al., 2018 outlines a package called quantreg.nonpar, which can implement nonparametric quantile regression in the following way:
 
 ```{r}
-1 + 1
+library(quantreg.nonpar)
+
+#fitting the model
+fit <- npqr(y ~ x, tau = 0.5, data = mydata)
+summary(fit)
+
+#making predictions
+newx <- data.frame(x = seq(min(mydata$x), max(mydata$x), length.out = 100))
+pred <- predict(fit, newdata = newx)
 ```
 
-Copyright © G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia
+Copyright © G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia. <https://creativecommons.org/licenses/by/4.0/>
 
-<https://creativecommons.org/licenses/by/4.0/>
+Lipsitz, M., Belloni, A., Chernozhukov, V., & Fernández-Val, I. (2016). *quantreg.nonpar: An R package for performing nonparametric series quantile regression*. arXiv. <https://arxiv.org/abs/1610.08329>
