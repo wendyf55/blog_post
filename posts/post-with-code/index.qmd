@@ -3,17 +3,24 @@ title: "Regression Analysis Methodologies for Continous Response Variables"
 author: "Wendy Frankel"
 date: "2026-01-14"
 categories: [how-to, code, analysis]
+format: html
+execute:
+  eval: false
 ---
 
-------------------------------------------------------------------------
+## Regression - Time to Learn Your Lesson
 
-Regression analysis is an evolving, useful, and important tool within the data science toolbox. Various methods are commonly used within scientific papers and industry. Therefore, understanding the different kinds of regression analysis, and being able to use them for the right purposes, is very important. However, there are so many kinds of regression analysis that it can be difficult to keep them all straight, and understand when they may be used. In this bloc post, I'll be going over some of the most important kinds of regression analysis, when dealing with a continuous response variable.
+Regression analysis is an evolving, useful, and important tool within the data science toolbox. Various methods are commonly used within scientific papers and industry. Therefore, understanding the different kinds of regression analysis, and being able to use them for the right purposes, is very important. However, there are so many kinds of regression analysis that it can be difficult to keep them all straight, and understand when they may be used. In this blog post, I'll be going over some of the most important kinds of regression analysis, when dealing with a continuous response variable.
 
-1.  **Local Conditioned Quantile**
+## Quantiles
 
-Non-parametric quantile regression models how different quantiles (e.g., the median or upper tail) of a response variable depend on predictors **without assuming a specific functional form** for that relationship. Instead of estimating the conditional mean, it directly estimates conditional quantiles using flexible methods such as kernel smoothing, splines, or local polynomial fitting. This makes it especially useful for capturing nonlinear effects and heteroskedasticity, and for understanding how covariates influence the entire distribution of the response rather than just its average.
+### **Non-parametric quantile regression**
 
-Lipsitz et al., 2018 outlines a package called quantreg.nonpar, which can implement nonparametric quantile regression in the following way:
+For prediction of a local conditioned quantile.
+
+Non-parametric quantile regression models how different quantiles (for example, the median or upper tail) of a response variable depend on predictors without assuming a specific functional form for that relationship. Instead of estimating the conditional mean (as we will get into later), it estimates conditional quantiles using methods such as kernel smoothing, splines, or local polynomial fitting. This makes it especially useful for capturing nonlinear effects and heteroskedasticity, and for understanding how covariates influence the entire distribution of the response rather than just its average.
+
+Lipsitz et al., 2018 outlines a package called quantreg.nonpar, an addition to the package quantreg, which can implement nonparametric quantile regression in the following way:
 
 ```{r}
 library(quantreg.nonpar)
@@ -27,6 +34,177 @@ newx <- data.frame(x = seq(min(mydata$x), max(mydata$x), length.out = 100))
 pred <- predict(fit, newdata = newx)
 ```
 
+### Parametric Quantile Regression
+
+For prediction or inference of a global conditioned quantile.
+
+Parametric quantile regression is a method for estimating the *conditional* quantiles of a response variable as a linear or explicitly specified function of predictor variables. Unlike non-parametric methods, it assumes a particular functional form for the relationship between predictors and the quantile of interest. For example, linear quantile regression estimates coefficients that describe how each predictor shifts the median, upper, or lower quantiles of the response (Mazucheli et al., 2022).
+
+Baione and Biancalana (2021) show a fantastic example of using parametric quantile regression to calculate loaded insurance premiums, based on individual insurance risk.
+
+In R, you can use the quantreg package to do parametric quantile regression.
+
+Quantreg allows both asymptotic inference (fast, good for large samples) and bootstrap inference (recommended for small samples or non-normal errors).
+
+```{r}
+library(quantreg)
+
+fit_median <- rq(y ~ x, tau = 0.5, data = data)
+fit_25 <- rq(y ~ x, tau = 0.25, data = data)
+fit_75 <- rq(y ~ x, tau = 0.75, data = data)
+
+# summary() outputs bootstrapped standard errors and confidence intervals.
+summary(fit, se = "boot", R = 1000)  # R = number of bootstrap replications
+
+newdata <- data.frame(x = seq(1, 5, length.out = 10))
+pred_median <- predict(fit_median, newdata)
+pred_25 <- predict(fit_25, newdata)
+pred_75 <- predict(fit_75, newdata)
+```
+
+## Local Conditioned Mean
+
+##### Estimates the conditional mean of y given x using local neighborhoods of data points.
+
+##### Essentially, it takes nearby points around x and computes a weighted average of their y values.
+
+##### Prediction: gives a smooth, continuous estimate of the mean at any x0.
+
+### Locally Weighted Scatterplot Smoother Regression (LOWESS / LOESS)
+
+For prediction of a local conditioned mean.
+
+LOWESS or LOESS models a local regression around each point using weighted least squares. Nearby points get higher weight; farther points get lower weight (usually via a kernel function). Prediction generates a smooth and continuous curve, which adapts to non-linear trends (Jacoby 2000).
+
+```{r}
+plot(data$var1, data$var2, main="lowess(data)")
+lines(lowess(data$var1, data$var2), col=2)
+lines(lowess(data$var1, data$var2, f=.2), col=3)
+```
+
+From: https://www.rdocumentation.org/packages/gplots/versions/3.3.0/topics/lowess
+
+### KNN-Regression
+
+KNN-regression can be used to predict a local conditioned mean.
+
+KNN-Regression predicts y at x as the average (or weighted average) of the k-number of nearest neighbors. It is simple and non-parametric. Prediction is continuous if weights are used (weighted average of neighbors), but step-like if simple averaging is used (less smooth) (GeeksforGeeks 2025).
+
+```{r}
+set.seed(123)
+split = sample.split(dataset$var1, SplitRatio = 0.75)
+training_set = subset(dataset, split == TRUE)
+test_set = subset(dataset, split == FALSE)
+
+training_set[, c(3, 4)] = scale(training_set[, c(3, 4)])
+test_set[, c(3, 4)] = scale(test_set[, c(3, 4)])
+y_pred = knn(train = training_set[,c(3,4)],
+             test = test_set[, c(3,4)], 
+             cl = training_set[, 5],
+             k = 5, 
+             prob = TRUE)
+```
+
+### Piece-wise local regression
+
+Piecewise local regression models split the 'predictor space' into intervals and fit separate models within each segment. These local models can be linear or higher-order polynomials. Predictions can be continuous if the pieces are connected smoothly across intervals, or non-continuous if each segment is modeled independently, resulting in stepwise jumps at the boundaries. The simplest form is a constant prediction, where each segment is assigned a fixed value (possibly mean or median) yielding a flat, non-continuous prediction across points (Rodríguez-Arelis et al., Lecture Notes, 2026).
+
+```{r}
+levels(fat_content$steps)
+knots <- c(7.8, 14.6, 21.4, 28.2)
+model_piecewise_cont_linear <- lm(fat ~ week + I((week - knots[1]) * (week >= knots[1])) +
+  I((week - knots[2]) * (week >= knots[2])) +
+  I((week - knots[3]) * (week >= knots[3]))+
+  I((week - knots[4]) * (week >= knots[4])),
+data = fat_content)
+```
+
+## Global Conditioned Mean
+
+A global model that estimates the average response across the entire dataset, rather than locally.
+
+### Ordinary Least Squares Regression
+
+The purpose of OLS is to estimate the conditional mean of a response variable y as a linear function of predictors x. For prediction, OLS creates a continuous function of predictors, based on a fixed formula.
+
+For standard regression inference (t-tests, confidence intervals) can be applied because a parametric form is assumed (Nguyen 2025).
+
+```{r}
+model <- lm(response_variable ~ explanatory_variable, data = mydata)
+```
+
+(*RPUBS - Linear Regression (OLS))*
+
+Ordinary least squares is often used in economic contexts. Rouse (1999) used OLS to predict a return-to-school by students, in a study which compared twins.
+
+## Survival Time
+
+Survival time regression analysis models the time until an event of interest occurs, accounting for censoring and the effects of predictors. It can be performed using parametric methods, which assume a specific distribution of survival times, or semi-parametric methods, like the Cox proportional hazards model, which focus on the relationship between predictors and the hazard without specifying the baseline survival distribution.
+
+### Parametric
+
+Distributional-based survival regression for inference or prediction. The idea is that we assume survival times follow a **specific distribution**, like exponential, Weibull, or log-normal. To model, we fit a regression model where the parameters of the survival distribution depend on predictors. Can be used for inference, to test significance of predictors on survival time, and compute confidence intervals for survival probabilities. It can also be used for prediction, to predict survival time distributions or probabilities for new individuals. Parametric survival regression requires assuming the **correct distribution**; misspecification can bias results (Mokhtar, 2024).
+
+```{r}
+fit.weibull <- flexsurvreg(formula = Surv(time, status) ~ 1, data = kidney, dist = "weibull")
+fit.ggama <- flexsurvreg(formula = Surv(time, status) ~ 1, data = kidney, dist = "gengamma")
+fit.lnorm <- flexsurvreg(formula = Surv(time, status) ~ 1, data = kidney, dist = "lognormal")
+```
+
+(*RPubs - Full code for Parametric Survival Analysis*)
+
+### Semi-Parametric or Cox proportional hazards regression
+
+Models the hazard (risk) of an event occurring at a given time as a function of predictors, without assuming a specific baseline survival distribution. Only assumes proportional hazards — the ratio of hazards between individuals is constant over time.
+
+For inference, tests significance of predictors on hazard (risk) rather than directly on survival time. It can compute confidence intervals for hazard ratios, but does not require specifying the full survival time distribution.
+
+For prediction, it estimates the relative risk (hazard ratios) for new individuals.
+
+Limitations are that it assumes proportional hazards; if this assumption is violated, model estimates may be biased. It also cannot directly model absolute survival times without additional assumptions (Mohktar 2024b).
+
+```{r}
+fit.g <- phreg(Surv(enter - 60, exit - 60, event) ~ sex + civ + region, 
+             dist = "gompertz", data = oldmort)
+fit.c <- coxreg(Surv(enter - 60, exit - 60, event) ~ sex + civ + region, data = oldmort)
+```
+
+Broström, G. (2024, September 19).
+
+A Cox regression model was used by Ihwah (2015) to model the time until a consumer bought a product.
+
+#### Summary
+
+Statistics is an ever-evolving field; that's what makes it so exciting! In an age of more and more data, learning how to properly analyse and model it is increasingly important. I hope you enjoyed my overview of some of the regression analysis methodologies, and where and how they can be used.
+
+### **Sources Cited:**
+
 Copyright © G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia. <https://creativecommons.org/licenses/by/4.0/>
 
 Lipsitz, M., Belloni, A., Chernozhukov, V., & Fernández-Val, I. (2016). *quantreg.nonpar: An R package for performing nonparametric series quantile regression*. arXiv. <https://arxiv.org/abs/1610.08329>
+
+Josmar Mazucheli, Bruna Alves, André F.B. Menezes, Víctor Leiva. An overview on parametric quantile regression models and their computational implementation with applications to biomedical problems including COVID-19 data, Computer Methods and Programs in Biomedicine, Volume 221, 2022, 106816, ISSN 0169-2607, <https://doi.org/10.1016/j.cmpb.2022.106816>.
+
+Baione, F., & Biancalana, D. (2021). An application of parametric quantile regression to extend the two-stage quantile regression for ratemaking. Scandinavian Actuarial Journal, 2021(2), 156–170. <https://doi.org/10.1080/03461238.2020.1820372>
+
+William G. Jacoby, Loess:: a nonparametric, graphical tool for depicting relationships between variables, Electoral Studies, Volume 19, Issue 4, 2000, Pages 577-613, ISSN 0261-3794, <https://doi.org/10.1016/S0261-3794(99)00028-1>.
+
+GeeksforGeeks. (2025, July 1). *Regression using kNearest Neighbors in R Programming*. GeeksforGeeks. https://www.geeksforgeeks.org/r-language/regression-using-k-nearest-neighbors-in-r-programming/
+
+G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia (2026). DSCI 562. Masters of Data Science Program, University of British Columbia.
+
+Nguyen, M. (2025, November 20). *5.1 Ordinary Least squares \| A guide on data analysis*. https://bookdown.org/mike/data_analysis/ordinary-least-squares.html
+
+*RPUBS - Linear Regression (OLS)*. (n.d.). https://rpubs.com/mpfoley73/527767
+
+Cecilia Elena Rouse, Further estimates of the economic return to schooling from a new sample of twins, Economics of Education Review, Volume 18, Issue 2, 1999, Pages 149-157, ISSN 0272-7757, <https://doi.org/10.1016/S0272-7757(98)00038-7>.
+
+Mokhtar, K. I. W. N. a. T. M. H. T. (2024, August 10). *Chapter 12 Parametric Survival Analysis \| Data Analysis in Medicine and Health using R*. https://bookdown.org/drki_musa/dataanalysis/parametric-survival-analysis.html
+
+*RPubs - Full code for Parametric Survival Analysis*. (n.d.). https://rpubs.com/IsArchemonde/742463
+
+Mokhtar, K. I. W. N. a. T. M. H. T. (2024b, August 10). *Chapter 12 Parametric Survival Analysis \| Data Analysis in Medicine and Health using R*. https://bookdown.org/drki_musa/dataanalysis/parametric-survival-analysis.html
+
+Broström, G. (2024, September 19). *Parametric survival models*. https://cran.r-project.org/web/packages/eha/vignettes/parametric.html
+
+The Use of Cox Regression Model to Analyze the Factors that Influence Consumer Purchase Decision on a Product. Azimmatul Ihwah. The 2014 International Conference on Agro-industry (ICoA) : Competitive and sustainable Agroindustry for Human Welfare, Agriculture and Agricultural Science Procedia 3 ( 2015 ) 78 – 83. doi: 10.1016/j.aaspro.2015.01.017
