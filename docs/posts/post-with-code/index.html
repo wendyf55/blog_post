@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Wendy Frankel">
+<meta name="dcterms.date" content="2026-01-14">
+
+<title>Regression Analysis Methodologies for Continous Response Variables – blog_post</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">blog_post</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Regression Analysis Methodologies for Continous Response Variables</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">how-to</div>
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">analysis</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Wendy Frankel </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 14, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="regression---time-to-learn-your-lesson" class="level2">
+<h2 class="anchored" data-anchor-id="regression---time-to-learn-your-lesson">Regression - Time to Learn Your Lesson</h2>
+<p>Regression analysis is an evolving, useful, and important tool within the data science toolbox. Various methods are commonly used within scientific papers and industry. Therefore, understanding the different kinds of regression analysis, and being able to use them for the right purposes, is very important. However, there are so many kinds of regression analysis that it can be difficult to keep them all straight, and understand when they may be used. In this blog post, I’ll be going over some of the most important kinds of regression analysis, when dealing with a continuous response variable.</p>
+</section>
+<section id="quantiles" class="level2">
+<h2 class="anchored" data-anchor-id="quantiles">Quantiles</h2>
+<section id="non-parametric-quantile-regression" class="level3">
+<h3 class="anchored" data-anchor-id="non-parametric-quantile-regression"><strong>Non-parametric quantile regression</strong></h3>
+<p>For prediction of a local conditioned quantile.</p>
+<p>Non-parametric quantile regression models how different quantiles (for example, the median or upper tail) of a response variable depend on predictors without assuming a specific functional form for that relationship. Instead of estimating the conditional mean (as we will get into later), it estimates conditional quantiles using methods such as kernel smoothing, splines, or local polynomial fitting. This makes it especially useful for capturing nonlinear effects and heteroskedasticity, and for understanding how covariates influence the entire distribution of the response rather than just its average.</p>
+<p>Lipsitz et al., 2018 outlines a package called quantreg.nonpar, an addition to the package quantreg, which can implement nonparametric quantile regression in the following way:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg.nonpar)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#fitting the model</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">npqr</span>(y <span class="sc">~</span> x, <span class="at">tau =</span> <span class="fl">0.5</span>, <span class="at">data =</span> mydata)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#making predictions</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>newx <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="fu">min</span>(mydata<span class="sc">$</span>x), <span class="fu">max</span>(mydata<span class="sc">$</span>x), <span class="at">length.out =</span> <span class="dv">100</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> newx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="parametric-quantile-regression" class="level3">
+<h3 class="anchored" data-anchor-id="parametric-quantile-regression">Parametric Quantile Regression</h3>
+<p>For prediction or inference of a global conditioned quantile.</p>
+<p>Parametric quantile regression is a method for estimating the <em>conditional</em> quantiles of a response variable as a linear or explicitly specified function of predictor variables. Unlike non-parametric methods, it assumes a particular functional form for the relationship between predictors and the quantile of interest. For example, linear quantile regression estimates coefficients that describe how each predictor shifts the median, upper, or lower quantiles of the response (Mazucheli et al., 2022).</p>
+<p>Baione and Biancalana (2021) show a fantastic example of using parametric quantile regression to calculate loaded insurance premiums, based on individual insurance risk.</p>
+<p>In R, you can use the quantreg package to do parametric quantile regression.</p>
+<p>Quantreg allows both asymptotic inference (fast, good for large samples) and bootstrap inference (recommended for small samples or non-normal errors).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit_median <span class="ot">&lt;-</span> <span class="fu">rq</span>(y <span class="sc">~</span> x, <span class="at">tau =</span> <span class="fl">0.5</span>, <span class="at">data =</span> data)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fit_25 <span class="ot">&lt;-</span> <span class="fu">rq</span>(y <span class="sc">~</span> x, <span class="at">tau =</span> <span class="fl">0.25</span>, <span class="at">data =</span> data)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fit_75 <span class="ot">&lt;-</span> <span class="fu">rq</span>(y <span class="sc">~</span> x, <span class="at">tau =</span> <span class="fl">0.75</span>, <span class="at">data =</span> data)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># summary() outputs bootstrapped standard errors and confidence intervals.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">se =</span> <span class="st">"boot"</span>, <span class="at">R =</span> <span class="dv">1000</span>)  <span class="co"># R = number of bootstrap replications</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">10</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>pred_median <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_median, newdata)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>pred_25 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_25, newdata)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>pred_75 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_75, newdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="local-conditioned-mean" class="level2">
+<h2 class="anchored" data-anchor-id="local-conditioned-mean">Local Conditioned Mean</h2>
+<section id="estimates-the-conditional-mean-of-y-given-x-using-local-neighborhoods-of-data-points." class="level5">
+<h5 class="anchored" data-anchor-id="estimates-the-conditional-mean-of-y-given-x-using-local-neighborhoods-of-data-points.">Estimates the conditional mean of y given x using local neighborhoods of data points.</h5>
+</section>
+<section id="essentially-it-takes-nearby-points-around-x-and-computes-a-weighted-average-of-their-y-values." class="level5">
+<h5 class="anchored" data-anchor-id="essentially-it-takes-nearby-points-around-x-and-computes-a-weighted-average-of-their-y-values.">Essentially, it takes nearby points around x and computes a weighted average of their y values.</h5>
+</section>
+<section id="prediction-gives-a-smooth-continuous-estimate-of-the-mean-at-any-x0." class="level5">
+<h5 class="anchored" data-anchor-id="prediction-gives-a-smooth-continuous-estimate-of-the-mean-at-any-x0.">Prediction: gives a smooth, continuous estimate of the mean at any x0.</h5>
+</section>
+<section id="locally-weighted-scatterplot-smoother-regression-lowess-loess" class="level3">
+<h3 class="anchored" data-anchor-id="locally-weighted-scatterplot-smoother-regression-lowess-loess">Locally Weighted Scatterplot Smoother Regression (LOWESS / LOESS)</h3>
+<p>For prediction of a local conditioned mean.</p>
+<p>LOWESS or LOESS models a local regression around each point using weighted least squares. Nearby points get higher weight; farther points get lower weight (usually via a kernel function). Prediction generates a smooth and continuous curve, which adapts to non-linear trends (Jacoby 2000).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data<span class="sc">$</span>var1, data<span class="sc">$</span>var2, <span class="at">main=</span><span class="st">"lowess(data)"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(data<span class="sc">$</span>var1, data<span class="sc">$</span>var2), <span class="at">col=</span><span class="dv">2</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">lowess</span>(data<span class="sc">$</span>var1, data<span class="sc">$</span>var2, <span class="at">f=</span>.<span class="dv">2</span>), <span class="at">col=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From: https://www.rdocumentation.org/packages/gplots/versions/3.3.0/topics/lowess</p>
+</section>
+<section id="knn-regression" class="level3">
+<h3 class="anchored" data-anchor-id="knn-regression">KNN-Regression</h3>
+<p>KNN-regression can be used to predict a local conditioned mean.</p>
+<p>KNN-Regression predicts y at x as the average (or weighted average) of the k-number of nearest neighbors. It is simple and non-parametric. Prediction is continuous if weights are used (weighted average of neighbors), but step-like if simple averaging is used (less smooth) (GeeksforGeeks 2025).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>split <span class="ot">=</span> <span class="fu">sample.split</span>(dataset<span class="sc">$</span>var1, <span class="at">SplitRatio =</span> <span class="fl">0.75</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">=</span> <span class="fu">subset</span>(dataset, split <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>test_set <span class="ot">=</span> <span class="fu">subset</span>(dataset, split <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>training_set[, <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)] <span class="ot">=</span> <span class="fu">scale</span>(training_set[, <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>test_set[, <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)] <span class="ot">=</span> <span class="fu">scale</span>(test_set[, <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">=</span> <span class="fu">knn</span>(<span class="at">train =</span> training_set[,<span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">4</span>)],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">test =</span> test_set[, <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">4</span>)], </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">cl =</span> training_set[, <span class="dv">5</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">k =</span> <span class="dv">5</span>, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">prob =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="piece-wise-local-regression" class="level3">
+<h3 class="anchored" data-anchor-id="piece-wise-local-regression">Piece-wise local regression</h3>
+<p>Piecewise local regression models split the ‘predictor space’ into intervals and fit separate models within each segment. These local models can be linear or higher-order polynomials. Predictions can be continuous if the pieces are connected smoothly across intervals, or non-continuous if each segment is modeled independently, resulting in stepwise jumps at the boundaries. The simplest form is a constant prediction, where each segment is assigned a fixed value (possibly mean or median) yielding a flat, non-continuous prediction across points (Rodríguez-Arelis et al., Lecture Notes, 2026).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(fat_content<span class="sc">$</span>steps)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>knots <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">7.8</span>, <span class="fl">14.6</span>, <span class="fl">21.4</span>, <span class="fl">28.2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>model_piecewise_cont_linear <span class="ot">&lt;-</span> <span class="fu">lm</span>(fat <span class="sc">~</span> week <span class="sc">+</span> <span class="fu">I</span>((week <span class="sc">-</span> knots[<span class="dv">1</span>]) <span class="sc">*</span> (week <span class="sc">&gt;=</span> knots[<span class="dv">1</span>])) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">I</span>((week <span class="sc">-</span> knots[<span class="dv">2</span>]) <span class="sc">*</span> (week <span class="sc">&gt;=</span> knots[<span class="dv">2</span>])) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">I</span>((week <span class="sc">-</span> knots[<span class="dv">3</span>]) <span class="sc">*</span> (week <span class="sc">&gt;=</span> knots[<span class="dv">3</span>]))<span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">I</span>((week <span class="sc">-</span> knots[<span class="dv">4</span>]) <span class="sc">*</span> (week <span class="sc">&gt;=</span> knots[<span class="dv">4</span>])),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">data =</span> fat_content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="global-conditioned-mean" class="level2">
+<h2 class="anchored" data-anchor-id="global-conditioned-mean">Global Conditioned Mean</h2>
+<p>A global model that estimates the average response across the entire dataset, rather than locally.</p>
+<section id="ordinary-least-squares-regression" class="level3">
+<h3 class="anchored" data-anchor-id="ordinary-least-squares-regression">Ordinary Least Squares Regression</h3>
+<p>The purpose of OLS is to estimate the conditional mean of a response variable y as a linear function of predictors x. For prediction, OLS creates a continuous function of predictors, based on a fixed formula.</p>
+<p>For standard regression inference (t-tests, confidence intervals) can be applied because a parametric form is assumed (Nguyen 2025).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(response_variable <span class="sc">~</span> explanatory_variable, <span class="at">data =</span> mydata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>(<em>RPUBS - Linear Regression (OLS))</em></p>
+<p>Ordinary least squares is often used in economic contexts. Rouse (1999) used OLS to predict a return-to-school by students, in a study which compared twins.</p>
+</section>
+</section>
+<section id="survival-time" class="level2">
+<h2 class="anchored" data-anchor-id="survival-time">Survival Time</h2>
+<p>Survival time regression analysis models the time until an event of interest occurs. It can be performed using parametric methods, which assume a specific distribution of survival times, or semi-parametric methods, like the Cox proportional hazards model.</p>
+<section id="parametric" class="level3">
+<h3 class="anchored" data-anchor-id="parametric">Parametric</h3>
+<p>Distributional-based survival regression for inference or prediction. The idea is that we assume survival times follow a specific distribution, like exponential, Weibull, or log-normal. To model, we fit a regression model where the parameters of the survival distribution depend on predictors. Can be used for inference, to test significance of predictors on survival time, and compute confidence intervals for survival probabilities. It can also be used for prediction, to predict survival time distributions or probabilities for new individuals. Parametric survival regression requires assuming the <strong>correct</strong> distribution; misspecification can bias results (Mokhtar, 2024).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit.weibull <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> kidney, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit.ggama <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> kidney, <span class="at">dist =</span> <span class="st">"gengamma"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fit.lnorm <span class="ot">&lt;-</span> <span class="fu">flexsurvreg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(time, status) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> kidney, <span class="at">dist =</span> <span class="st">"lognormal"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>(<em>RPubs - Full code for Parametric Survival Analysis</em>)</p>
+</section>
+<section id="semi-parametric-or-cox-proportional-hazards-regression" class="level3">
+<h3 class="anchored" data-anchor-id="semi-parametric-or-cox-proportional-hazards-regression">Semi-Parametric or Cox proportional hazards regression</h3>
+<p>Models the chance of an event occurring at a given time as a function of predictors, without assuming a specific baseline survival distribution. Only assumes proportional hazards (risk) - the ratio of hazards between individuals is constant over time.</p>
+<p>For inference, it tests significance of predictors on hazard rather than directly on survival time. It can compute confidence intervals for hazard ratios, but does not require specifying the full survival time distribution.</p>
+<p>For prediction, it estimates the relative risk (hazard ratios) for new individuals.</p>
+<p>Limitations are that it assumes proportional hazards; if this assumption is violated, model estimates may be biased. It also cannot directly model absolute survival times without additional assumptions (Mohktar 2024b).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit.g <span class="ot">&lt;-</span> <span class="fu">phreg</span>(<span class="fu">Surv</span>(enter <span class="sc">-</span> <span class="dv">60</span>, exit <span class="sc">-</span> <span class="dv">60</span>, event) <span class="sc">~</span> sex <span class="sc">+</span> civ <span class="sc">+</span> region, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">dist =</span> <span class="st">"gompertz"</span>, <span class="at">data =</span> oldmort)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fit.c <span class="ot">&lt;-</span> <span class="fu">coxreg</span>(<span class="fu">Surv</span>(enter <span class="sc">-</span> <span class="dv">60</span>, exit <span class="sc">-</span> <span class="dv">60</span>, event) <span class="sc">~</span> sex <span class="sc">+</span> civ <span class="sc">+</span> region, <span class="at">data =</span> oldmort)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Broström, G. (2024, September 19).</p>
+<p>A Cox regression model was used by Ihwah (2015) to model the time until a consumer bought a product.</p>
+<section id="summary" class="level4">
+<h4 class="anchored" data-anchor-id="summary">Summary</h4>
+<p>Statistics is an ever-evolving field; that’s what makes it so exciting! In an age of more and more data, learning how to properly analyse and model it is increasingly important. I hope you enjoyed my overview of some of the regression analysis methodologies, and where and how they can be used.</p>
+</section>
+</section>
+<section id="sources-cited" class="level3">
+<h3 class="anchored" data-anchor-id="sources-cited"><strong>Sources Cited:</strong></h3>
+<p>Copyright © G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia. <a href="https://creativecommons.org/licenses/by/4.0/" class="uri">https://creativecommons.org/licenses/by/4.0/</a></p>
+<p>Lipsitz, M., Belloni, A., Chernozhukov, V., &amp; Fernández-Val, I. (2016). <em>quantreg.nonpar: An R package for performing nonparametric series quantile regression</em>. arXiv. <a href="https://arxiv.org/abs/1610.08329" class="uri">https://arxiv.org/abs/1610.08329</a></p>
+<p>Josmar Mazucheli, Bruna Alves, André F.B. Menezes, Víctor Leiva. An overview on parametric quantile regression models and their computational implementation with applications to biomedical problems including COVID-19 data, Computer Methods and Programs in Biomedicine, Volume 221, 2022, 106816, ISSN 0169-2607, <a href="https://doi.org/10.1016/j.cmpb.2022.106816" class="uri">https://doi.org/10.1016/j.cmpb.2022.106816</a>.</p>
+<p>Baione, F., &amp; Biancalana, D. (2021). An application of parametric quantile regression to extend the two-stage quantile regression for ratemaking. Scandinavian Actuarial Journal, 2021(2), 156–170. <a href="https://doi.org/10.1080/03461238.2020.1820372" class="uri">https://doi.org/10.1080/03461238.2020.1820372</a></p>
+<p>William G. Jacoby, Loess:: a nonparametric, graphical tool for depicting relationships between variables, Electoral Studies, Volume 19, Issue 4, 2000, Pages 577-613, ISSN 0261-3794, <a href="https://doi.org/10.1016/S0261-3794(99)00028-1" class="uri">https://doi.org/10.1016/S0261-3794(99)00028-1</a>.</p>
+<p>GeeksforGeeks. (2025, July 1). <em>Regression using kNearest Neighbors in R Programming</em>. GeeksforGeeks. https://www.geeksforgeeks.org/r-language/regression-using-k-nearest-neighbors-in-r-programming/</p>
+<p>G. Alexi Rodríguez-Arelis, Payman Nickchi, Rodolfo Lourenzutti, and Vincenzo Coia (2026). DSCI 562. Masters of Data Science Program, University of British Columbia.</p>
+<p>Nguyen, M. (2025, November 20). <em>5.1 Ordinary Least squares | A guide on data analysis</em>. https://bookdown.org/mike/data_analysis/ordinary-least-squares.html</p>
+<p><em>RPUBS - Linear Regression (OLS)</em>. (n.d.). https://rpubs.com/mpfoley73/527767</p>
+<p>Cecilia Elena Rouse, Further estimates of the economic return to schooling from a new sample of twins, Economics of Education Review, Volume 18, Issue 2, 1999, Pages 149-157, ISSN 0272-7757, <a href="https://doi.org/10.1016/S0272-7757(98)00038-7" class="uri">https://doi.org/10.1016/S0272-7757(98)00038-7</a>.</p>
+<p>Mokhtar, K. I. W. N. a. T. M. H. T. (2024, August 10). <em>Chapter 12 Parametric Survival Analysis | Data Analysis in Medicine and Health using R</em>. https://bookdown.org/drki_musa/dataanalysis/parametric-survival-analysis.html</p>
+<p><em>RPubs - Full code for Parametric Survival Analysis</em>. (n.d.). https://rpubs.com/IsArchemonde/742463</p>
+<p>Mokhtar, K. I. W. N. a. T. M. H. T. (2024b, August 10). <em>Chapter 12 Parametric Survival Analysis | Data Analysis in Medicine and Health using R</em>. https://bookdown.org/drki_musa/dataanalysis/parametric-survival-analysis.html</p>
+<p>Broström, G. (2024, September 19). <em>Parametric survival models</em>. https://cran.r-project.org/web/packages/eha/vignettes/parametric.html</p>
+<p>The Use of Cox Regression Model to Analyze the Factors that Influence Consumer Purchase Decision on a Product. Azimmatul Ihwah. The 2014 International Conference on Agro-industry (ICoA) : Competitive and sustainable Agroindustry for Human Welfare, Agriculture and Agricultural Science Procedia 3 ( 2015 ) 78 – 83. doi: 10.1016/j.aaspro.2015.01.017</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
