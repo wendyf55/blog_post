@@ -139,11 +139,11 @@ Ordinary least squares is often used in economic contexts. Rouse (1999) used OLS
 
 ## Survival Time
 
-Survival time regression analysis models the time until an event of interest occurs, accounting for censoring and the effects of predictors. It can be performed using parametric methods, which assume a specific distribution of survival times, or semi-parametric methods, like the Cox proportional hazards model, which focus on the relationship between predictors and the hazard without specifying the baseline survival distribution.
+Survival time regression analysis models the time until an event of interest occurs. It can be performed using parametric methods, which assume a specific distribution of survival times, or semi-parametric methods, like the Cox proportional hazards model.
 
 ### Parametric
 
-Distributional-based survival regression for inference or prediction. The idea is that we assume survival times follow a **specific distribution**, like exponential, Weibull, or log-normal. To model, we fit a regression model where the parameters of the survival distribution depend on predictors. Can be used for inference, to test significance of predictors on survival time, and compute confidence intervals for survival probabilities. It can also be used for prediction, to predict survival time distributions or probabilities for new individuals. Parametric survival regression requires assuming the **correct distribution**; misspecification can bias results (Mokhtar, 2024).
+Distributional-based survival regression for inference or prediction. The idea is that we assume survival times follow a specific distribution, like exponential, Weibull, or log-normal. To model, we fit a regression model where the parameters of the survival distribution depend on predictors. Can be used for inference, to test significance of predictors on survival time, and compute confidence intervals for survival probabilities. It can also be used for prediction, to predict survival time distributions or probabilities for new individuals. Parametric survival regression requires assuming the **correct** distribution; misspecification can bias results (Mokhtar, 2024).
 
 ```{r}
 fit.weibull <- flexsurvreg(formula = Surv(time, status) ~ 1, data = kidney, dist = "weibull")
@@ -155,9 +155,9 @@ fit.lnorm <- flexsurvreg(formula = Surv(time, status) ~ 1, data = kidney, dist =
 
 ### Semi-Parametric or Cox proportional hazards regression
 
-Models the hazard (risk) of an event occurring at a given time as a function of predictors, without assuming a specific baseline survival distribution. Only assumes proportional hazards — the ratio of hazards between individuals is constant over time.
+Models the chance of an event occurring at a given time as a function of predictors, without assuming a specific baseline survival distribution. Only assumes proportional hazards (risk) - the ratio of hazards between individuals is constant over time.
 
-For inference, tests significance of predictors on hazard (risk) rather than directly on survival time. It can compute confidence intervals for hazard ratios, but does not require specifying the full survival time distribution.
+For inference, it tests significance of predictors on hazard rather than directly on survival time. It can compute confidence intervals for hazard ratios, but does not require specifying the full survival time distribution.
 
 For prediction, it estimates the relative risk (hazard ratios) for new individuals.
 
